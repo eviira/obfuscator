@@ -1,8 +1,8 @@
 #include <windows.h>
 #include <iostream>
 #include <fstream>
-#include "payload\payload.h"
-#include "cryptor\cryptor.h"
+#include "../payload/entry.cpp"
+#include "cryptor.cpp"
 
 #pragma section(".replace", read)
 __declspec(allocate(".replace")) INT32 payload_offet_from_me = 2;

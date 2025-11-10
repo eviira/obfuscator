@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include "cryptor\cryptor.h"
+#include "cryptor.cpp"
 
 using namespace std;
 
@@ -18,7 +18,7 @@ void fatal(const char *format, ...) {
 }
 
 int main(int argc, char const *argv[]) {
-	fstream mainFileStream(".\\output\\main.exe", ios::binary | ios::in | ios::out);
+	fstream mainFileStream("./main.exe", ios::binary | ios::in | ios::out);
 	if (!mainFileStream.is_open()) {
 		fatal("failed to open file");
 	}

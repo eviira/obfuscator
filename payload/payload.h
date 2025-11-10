@@ -1,1 +1,0 @@
-int start_payload(int argc, char const *argv[]);

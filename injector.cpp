@@ -63,6 +63,11 @@ int main(int argc, char const *argv[]) {
 	read_to(mainFileStream, SizeOfOptionalHeader);
 	printf("size of optional header: %hu\n", SizeOfOptionalHeader);
 
+	// read characteristics
+	UINT16 COFFCharacteristics;
+	mainFileStream.seekg(PEStart + 4 + 18, ios::beg);
+	read_to(mainFileStream, COFFCharacteristics);
+	printf("characteristics: %hu\n", COFFCharacteristics);
 
 
 	// SECTION TABLE
@@ -127,6 +132,12 @@ int main(int argc, char const *argv[]) {
 	if (!payloadFound)
 		fatal("section with name .payload not found");
 
+	// WRITE TO COFF HEADER
+	// set IMAGE_FILE_RELOCS_STRIPPED characteristic
+	COFFCharacteristics |= 0x1;
+	mainFileStream.seekp(PEStart + 4 + 18, ios::beg);
+	printf("characteristics to write: %hu\n", COFFCharacteristics);
+	mainFileStream.write(reinterpret_cast<char*>(&COFFCharacteristics), sizeof COFFCharacteristics);
 
 	// WRITE TO .replace
 	// overwrite the values in the .replace section

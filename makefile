@@ -9,7 +9,7 @@ injector_tmp := ${tmp_dir}\injector.obj
 default_flags := /DYNAMICBASE:NO /Oy- /MT
 
 all: main injector
-#	${out_dir}\injector.exe
+	${out_dir}\injector.exe
 
 main: compile-entry compile-cryptor compile-payload
 	cl.exe -Fe:"${out_dir}\main.exe" ${default_flags} /FIXED /NXCOMPAT:NO ${entry_tmp} ${cryptor_tmp} ${payload_tmp} 

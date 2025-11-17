@@ -1,7 +1,10 @@
+// load payload first
+// libssh wants to be loaded before windows.h
+#include "../payload/entry.cpp"
+
 #include <windows.h>
 #include <iostream>
 #include <fstream>
-#include "../payload/entry.cpp"
 #include "cryptor.cpp"
 
 #pragma section(".replace", read)

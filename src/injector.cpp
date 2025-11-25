@@ -167,7 +167,7 @@ int main(int argc, char const *argv[]) {
 	for (int i=0; i<PayloadVirtualSize; i++) {
 		printf( "%hhx ", *(payloadData+i) );
 	}
-	cout << "\n";
+	cout << std::endl;
 
 	// encrypt payload
 	crypt_array(payloadData, PayloadVirtualSize, PayloadCryptKey, nullptr);
@@ -176,7 +176,7 @@ int main(int argc, char const *argv[]) {
 	for (int i=0; i<PayloadVirtualSize; i++) {
 		printf( "%hhx ", *(payloadData+i) );
 	}
-	cout << "\n";
+	cout << std::endl;
 
 	// write encrypted payload back to file
 	mainFileStream.seekp(PayloadFilePosition, ios::beg);

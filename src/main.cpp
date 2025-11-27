@@ -78,6 +78,12 @@ void overwrite_file(const char *file_path, unsigned next_key) {
 
 int main(int argc, char const *argv[])
 {
+	// check that the user ran the injector
+	if (payload_offet_from_me == 1) {
+		std::cout << "I think you forgot to run the injector" << std::endl;
+		return 1;
+	}
+
 	// pointer to the start of the payload section in memory
 	// see also: payload_segment_length
 	payload_start_addr = (char*) INT32(&payload_offet_from_me) + payload_offet_from_me;

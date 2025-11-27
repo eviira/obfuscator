@@ -22,7 +22,7 @@
  - the program moves the file and copies it to where it used to be
  - the program copies and then encrypts the .payload to the heap with a new key (using fields 1 and 2)
  - the program overwrites the .payload section and the key in the new file (using fields 4, 2 and 5)
- - then it just enters the payload
+ - then it just runs the payload
 
 ### Limitations:
 - IMAGE_FILE_RELOCS_STRIPPED is forced true by the injector, main.exe may just refuse to run in certain situations (havent had that happen)

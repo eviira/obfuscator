@@ -14,3 +14,6 @@
 // common stdlib
 #include <stdexcept>
 #include <iostream>
+
+// payload entry
+int startPayload(int argc, const char *argv[]);

@@ -1,7 +1,7 @@
-// this file exists to compile payload without invoking main and injector
+// this file exists so you can compile payload without invoking main and injector
 
-#include "./entry.cpp"
+#include "./payload.cpp"
 
 int main(int argc, const char *argv[]) {
-	return start_payload(argc, argv);
+	return startPayload(argc, argv);
 }

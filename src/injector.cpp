@@ -141,7 +141,7 @@ int main(int argc, char const *argv[]) {
 
 	// WRITE TO .replace
 	// overwrite the values in the .replace section
-	unsigned PayloadCryptKey = time(0);
+	UINT32 PayloadCryptKey = time(0);
 	INT32 VirtualOffset = PayloadVirtualAddress - ReplaceVirtualAddress;
 
 	mainFileStream.seekp(ReplaceFilePosition, ios::beg);

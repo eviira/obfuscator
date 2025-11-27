@@ -1,6 +1,6 @@
 #include "payload.h"
 
-// ssh and winsock need to be explicitly initilized before the first call
+// winsock needs to be explicitly initilized before the first call
 // and deinitilized after the last call
 
 void payloadInit() {
@@ -12,12 +12,6 @@ void payloadInit() {
         throw std::runtime_error("starting winsock2.2");
     }
 
-	// start ssh
-	// has to be explcititly called when statically linking
-	if (ssh_init()) {
-		throw std::exception("failed to init ssh package");
-	}
-
 	// Redirect CRT error reports to STDERR  
 	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);  
 	_CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
@@ -28,10 +22,4 @@ void payloadClean() {
 	if (WSACleanup()) {
         std::cerr << "WSACleanup: " << WSAGetLastError() << std::endl;
     }
-
-	// stop ssh
-	// has to be called when ssh_init is explicitly called
-	if (ssh_finalize()) {
-		std::cerr << "failed to de-init ssh package" << std::endl;
-	}
 }

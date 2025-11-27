@@ -1,10 +1,5 @@
 #pragma once
 
-// libssh
-#include <libssh/libssh.h>
-#include <libssh/server.h>
-#include <libssh/callbacks.h>
-
 // windows
 // so winsock2 and 1.1 dont collide
 #ifndef WIN32_LEAN_AND_MEAN

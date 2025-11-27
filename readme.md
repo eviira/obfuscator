@@ -26,4 +26,7 @@
 
 ### Limitations:
 - IMAGE_FILE_RELOCS_STRIPPED is forced true by the injector, main.exe may just refuse to run in certain situations (havent had that happen)
-- the reverse shell needs to be used with netcat instead of ssh, it was a massive waste of time trying to get that working
+- the other side of the reverse shell needs to be used with netcat instead of ssh, it was a massive waste of time trying to get libssh working
+- the next payload key is gotten by just generating another random value after encrypting the payload, this has 2 implcations:
+  - if the program hits a known hash, you can also predict what the next hash is going to be
+  - the total amount of hashes the program can have is RAND_MAX + amount of distributions (since injector sets the first key as time(0))
